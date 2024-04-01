@@ -8,14 +8,22 @@ const AccordionItem = ({ item }) => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const { incorrect_answers, correct_answer, question } = item;
 
+  const answerIsCorrect = selectedAnswer === correct_answer;
+
   const allAnswers = useMemo(
     () => shuffleArray([...incorrect_answers, correct_answer]),
     [incorrect_answers, correct_answer]
   );
 
-  // Function to handle answer selection
   const handleSelectAnswer = (answer) => {
     setSelectedAnswer(answer);
+  };
+
+  const itemClass = (option) => {
+    if (selectedAnswer !== option) {
+      return styles.option;
+    }
+    return answerIsCorrect ? styles.correctAnswer : styles.incorrectAnswer;
   };
 
   return (
@@ -31,10 +39,7 @@ const AccordionItem = ({ item }) => {
           {allAnswers.map((option, index) => (
             <TouchableOpacity
               key={index}
-              style={[
-                styles.option,
-                selectedAnswer === option && styles.selectedOption,
-              ]}
+              style={[styles.option, itemClass(option)]}
               onPress={() => handleSelectAnswer(option)}
             >
               <Text style={styles.text}>{he.decode(option)}</Text>
@@ -72,9 +77,13 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 4,
   },
-  selectedOption: {
-    backgroundColor: "#e0f7fa", // Change color to highlight selection
-    borderColor: "#4dd0e1",
+  correctAnswer: {
+    backgroundColor: "green",
+    // borderColor: "#4dd0e1",
+  },
+  incorrectAnswer: {
+    backgroundColor: "red",
+    // borderColor: "#4dd0e1",
   },
 });
 
