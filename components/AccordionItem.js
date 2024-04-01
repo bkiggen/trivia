@@ -1,14 +1,24 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import he from "he";
 import shuffleArray from "../util/shuffleArray";
 
-const AccordionItem = ({ item }) => {
+const AccordionItem = ({ item, index, setCorrectAnswers }) => {
   const [expanded, setExpanded] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const { incorrect_answers, correct_answer, question } = item;
 
   const answerIsCorrect = selectedAnswer === correct_answer;
+
+  useEffect(() => {
+    if (selectedAnswer) {
+      setCorrectAnswers((prevState) => {
+        const newState = [...prevState];
+        newState[index] = answerIsCorrect;
+        return newState;
+      });
+    }
+  }, [selectedAnswer, answerIsCorrect, index, setCorrectAnswers]);
 
   const allAnswers = useMemo(
     () => shuffleArray([...incorrect_answers, correct_answer]),
